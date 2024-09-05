@@ -1,0 +1,226 @@
+{
+  "id": "4443223",
+  "name": "毕设项目",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "20115306",
+      "name": "成绩发布",
+      "font_class": "chengjifabu",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "28535986",
+      "name": "成绩管理-成绩查询",
+      "font_class": "chengjiguanli-chengjichaxun",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "8821271",
+      "name": "信息查询-01",
+      "font_class": "xinxichaxun-",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "11702314",
+      "name": "选课中心",
+      "font_class": "xuankezhongxin",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    },
+    {
+      "icon_id": "10359985",
+      "name": "课程表",
+      "font_class": "kechengbiao",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "4033701",
+      "name": "16_教学管理(教务员)",
+      "font_class": "_jiaoxueguanlijiaowuyuan",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "17722018",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "12548117",
+      "name": "成绩",
+      "font_class": "chengji-",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "12906226",
+      "name": "学籍管理",
+      "font_class": "xuejiguanli",
+      "unicode": "e6b6",
+      "unicode_decimal": 59062
+    },
+    {
+      "icon_id": "19478494",
+      "name": "学院管理",
+      "font_class": "xueyuanguanli",
+      "unicode": "e709",
+      "unicode_decimal": 59145
+    },
+    {
+      "icon_id": "20853347",
+      "name": "权限管理",
+      "font_class": "quanxianguanli",
+      "unicode": "e6a7",
+      "unicode_decimal": 59047
+    },
+    {
+      "icon_id": "27485045",
+      "name": "教师管理",
+      "font_class": "jiaoshiguanli",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "27888471",
+      "name": "已选课程",
+      "font_class": "yixuan",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "34670336",
+      "name": "教务员审核",
+      "font_class": "jiaowuyuanshenhe",
+      "unicode": "e702",
+      "unicode_decimal": 59138
+    },
+    {
+      "icon_id": "1084954",
+      "name": "考试信息",
+      "font_class": "kaoshixinxi",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "4300068",
+      "name": "班级管理",
+      "font_class": "banjiguanli",
+      "unicode": "e66d",
+      "unicode_decimal": 58989
+    },
+    {
+      "icon_id": "4307787",
+      "name": "作业批改",
+      "font_class": "zuoyepigai",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "4736787",
+      "name": "处理",
+      "font_class": "chuli",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "5100057",
+      "name": "选课",
+      "font_class": "XYXK_YH",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "5137012",
+      "name": "选修课",
+      "font_class": "xuanxiuke",
+      "unicode": "e665",
+      "unicode_decimal": 58981
+    },
+    {
+      "icon_id": "5766072",
+      "name": "课程管理_m",
+      "font_class": "kecheng_m",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "6677529",
+      "name": "数据处理",
+      "font_class": "shujuchuli",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "6873537",
+      "name": "申述",
+      "font_class": "shenshu",
+      "unicode": "e694",
+      "unicode_decimal": 59028
+    },
+    {
+      "icon_id": "6940335",
+      "name": "课程信息",
+      "font_class": "kechengxinxi",
+      "unicode": "e6c7",
+      "unicode_decimal": 59079
+    },
+    {
+      "icon_id": "7765184",
+      "name": "学校_学生",
+      "font_class": "xuexiao_xuesheng",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "9589362",
+      "name": "处理",
+      "font_class": "chuli1",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "9677989",
+      "name": "教师课程表",
+      "font_class": "jiaoshi",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "9934415",
+      "name": "管理员管理",
+      "font_class": "guanliyuanguanli",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "10341889",
+      "name": "标题专业管理",
+      "font_class": "biaotizhuanyeguanli",
+      "unicode": "e70e",
+      "unicode_decimal": 59150
+    },
+    {
+      "icon_id": "10790862",
+      "name": "课程安排",
+      "font_class": "kechenganpai",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "12331679",
+      "name": "日志",
+      "font_class": "rizhi",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    }
+  ]
+}

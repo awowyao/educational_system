@@ -1,0 +1,140 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4443223 */
+  src: url('iconfont.woff2?t=1708764072383') format('woff2'),
+       url('iconfont.woff?t=1708764072383') format('woff'),
+       url('iconfont.ttf?t=1708764072383') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-chengjifabu:before {
+  content: "\e647";
+}
+
+.icon-chengjiguanli-chengjichaxun:before {
+  content: "\e600";
+}
+
+.icon-xinxichaxun-:before {
+  content: "\e613";
+}
+
+.icon-xuankezhongxin:before {
+  content: "\e651";
+}
+
+.icon-kechengbiao:before {
+  content: "\e603";
+}
+
+.icon-_jiaoxueguanlijiaowuyuan:before {
+  content: "\e63d";
+}
+
+.icon-shouye:before {
+  content: "\e602";
+}
+
+.icon-chengji-:before {
+  content: "\e61b";
+}
+
+.icon-xuejiguanli:before {
+  content: "\e6b6";
+}
+
+.icon-xueyuanguanli:before {
+  content: "\e709";
+}
+
+.icon-quanxianguanli:before {
+  content: "\e6a7";
+}
+
+.icon-jiaoshiguanli:before {
+  content: "\e60b";
+}
+
+.icon-yixuan:before {
+  content: "\e607";
+}
+
+.icon-jiaowuyuanshenhe:before {
+  content: "\e702";
+}
+
+.icon-kaoshixinxi:before {
+  content: "\e60a";
+}
+
+.icon-banjiguanli:before {
+  content: "\e66d";
+}
+
+.icon-zuoyepigai:before {
+  content: "\e612";
+}
+
+.icon-chuli:before {
+  content: "\e618";
+}
+
+.icon-XYXK_YH:before {
+  content: "\e61d";
+}
+
+.icon-xuanxiuke:before {
+  content: "\e665";
+}
+
+.icon-kecheng_m:before {
+  content: "\e65e";
+}
+
+.icon-shujuchuli:before {
+  content: "\e606";
+}
+
+.icon-shenshu:before {
+  content: "\e694";
+}
+
+.icon-kechengxinxi:before {
+  content: "\e6c7";
+}
+
+.icon-xuexiao_xuesheng:before {
+  content: "\e661";
+}
+
+.icon-chuli1:before {
+  content: "\e64c";
+}
+
+.icon-jiaoshi:before {
+  content: "\e63c";
+}
+
+.icon-guanliyuanguanli:before {
+  content: "\e605";
+}
+
+.icon-biaotizhuanyeguanli:before {
+  content: "\e70e";
+}
+
+.icon-kechenganpai:before {
+  content: "\e623";
+}
+
+.icon-rizhi:before {
+  content: "\e668";
+}
+
