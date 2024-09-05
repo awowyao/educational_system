@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cwy.educationaladministrationsystem.mapper.loginMapper">
+<!--    <resultMap type="com.cwy.educationaladministrationsystem.model.user" id="userResult">-->
+<!--        <result property="specialtyName" column="specialty_name"/>-->
+<!--    </resultMap>-->
+    <select id="studentLogin" resultType="com.cwy.educationaladministrationsystem.model.user">
+        select id,name, password from student_table where id=#{userName} AND password=#{password}
+    </select>
+
+    <select id="teacherLogin" resultType="com.cwy.educationaladministrationsystem.model.user">
+        select id,name, password from teacher_table where id=#{userName} AND password=#{password}
+    </select>
+
+    <select id="deanLogin" resultType="com.cwy.educationaladministrationsystem.model.user">
+        select id,name, password from dean_table where id=#{userName} AND password=#{password}
+    </select>
+    <select id="adminLogin" resultType="com.cwy.educationaladministrationsystem.model.user">
+        select id,name, password from admin_table where name=#{userName} AND password=#{password}
+    </select>
+
+    <update id="updateStudentPassword">
+        update student_table set password=#{newPassword} where id=#{studentId}
+    </update>
+
+    <update id="resetStudentPassword">
+        update student_table set password=#{password} where id=#{studentId}
+    </update>
+    <update id="updateDeanPassword">
+        update dean_table set password=#{password} where id=#{id}
+    </update>
+
+    <update id="updateAdminPassword">
+        update admin_table set password=#{password} where name=#{userName}
+    </update>
+
+    <update id="resetTeacherPassword">
+        update teacher_table set password=#{password} where id=#{teacherId}
+    </update>
+
+    <update id="editStudentUserCover">
+        update student_table set cover=#{imagePath} where id=#{id}
+    </update>
+    <update id="editTeacherUserCover">
+        update teacher_table set cover=#{imagePath} where id=#{id}
+    </update>
+    <update id="editDeanUserCover">
+        update dean_table set cover=#{imagePath} where id=#{id}
+    </update>
+    <update id="editAdminUserCover">
+        update admin_table set cover=#{imagePath} where id=#{id}
+    </update>
+
+
+
+
+</mapper>

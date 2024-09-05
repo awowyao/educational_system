@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cwy.educationaladministrationsystem.mapper.dean.examMapper">
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.exam" id="examResult">
+        <result property="specialtyName" column="specialty_name"/>
+        <result property="electveCourseId" column="electve_course_id"/>
+        <result property="examTime" column="exam_time"/>
+        <result property="examBeginTime" column="exam_begin_time"/>
+        <result property="courseId" column="course_id"/>
+
+        <result property="academyId" column="academy_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.course" id="courseResult">
+        <result property="academyId" column="ac_id"/>
+        <result property="specialtyName" column="specialty_name"/>
+
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="addExam"  useGeneratedKeys="true" keyProperty="id">
+        insert into exam_table(name,exam_begin_time, exam_time, academy_id, specialty_name, course_id,electve_course_id, create_time, update_time)
+        VALUES (#{name} , #{examBeginTime}, #{examTime}, #{academyId}, #{specialtyName}, #{courseId},#{electveCourseId} ,#{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="addStudentExam">
+        insert into student_exam_table(student_id, exam_id)
+        VALUES (#{StudentId}, #{examId})
+    </insert>
+
+    <update id="editExam">
+        update exam_table set name=#{name},exam_begin_time=#{examBeginTime},exam_time=#{examTime},
+                              academy_id=#{academyId},specialty_name=#{specialtyName},course_id=#{courseId},update_time=#{updateTime} where id=#{id}
+    </update>
+
+
+    <select id="selectExamList" resultMap="examResult">
+        SELECT e.*,c.name as courseName,ec.name as electveCourseName FROM exam_table as e
+        LEFT JOIN academy_table as a ON e.academy_id=a.id
+        LEFT JOIN specialty_table as s on s.name = e.specialty_name
+        LEFT JOIN course_table as c on c.id = e.course_id
+        LEFT JOIN elective_course_table as ec on ec.id = e.electve_course_id
+        <where>
+            <if test="acId != 0">
+                e.academy_id = #{acId}
+                <if test="specialtyName != '0'.toString()">
+                    and e.specialty_name = #{specialtyName}
+                </if>
+                <if test="selectData != '0'.toString()">
+                    and (e.name like "%"#{selectData}"%" or c.name like "%"#{selectData}"%")
+                </if>
+            </if>
+            <if test="acId == 0">
+                <if test="selectData != '0'.toString()">
+                    (e.name like "%"#{selectData}"%" or c.name like "%"#{selectData}"%")
+                </if>
+                <if test="specialtyName != '0'.toString()">
+                    e.specialty_name = #{specialtyName}
+                </if>
+            </if>
+            <if test="deanId != 0">
+                and e.academy_id in(select academy_id from dean_authority_table where dean_id=#{deanId})
+            </if>
+        </where>
+
+    </select>
+
+
+    <select id="selectByIdExam" resultMap="examResult">
+        SELECT * FROM exam_table where id=#{id}
+    </select>
+
+    <select id="selectByCourseIdGetExam" resultMap="examResult">
+        SELECT * FROM exam_table where course_id=#{id}
+    </select>
+    <select id="selectByElectiveCourseIdGetExam" resultMap="examResult">
+        SELECT * FROM exam_table where electve_course_id=#{id}
+    </select>
+
+    <select id="BySpecialtyGetCourse" resultMap="courseResult">
+        SELECT * FROM course_table where specialty_name=#{specialty}
+    </select>
+    <delete id="deleteExam">
+        delete from exam_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+
+    <delete id="deleteStudentExam">
+        delete from student_exam_table
+        <where>
+            exam_id=#{id}
+        </where>
+    </delete>
+    <delete id="deleteStudentIdExamId">
+        delete from student_exam_table
+        <where>
+            exam_id=#{examId} and student_id=#{studentId}
+        </where>
+    </delete>
+
+    <update id="editStudentScores">
+        update student_exam_table set scores=#{scores},scores_state=1 where id=#{id}
+    </update>
+
+    <update id="ComplainteditStudentScores">
+        update studen_complaint_table set state=1 where student_exam_id=#{id}
+    </update>
+
+</mapper>

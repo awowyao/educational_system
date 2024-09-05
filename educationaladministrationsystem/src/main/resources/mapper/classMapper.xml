@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cwy.educationaladministrationsystem.mapper.classMapper">
+
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.teacher" id="teacherResult">
+        <result property="curriculumId" column="curriculum_id"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.ClassT" id="ClassResult">
+        <result property="academyId" column="academy_id"/>
+        <result property="specialtyName" column="specialty_name"/>
+        <result property="curriculumId" column="curriculum_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="com.cwy.educationaladministrationsystem.model.curriculum" id="curriculumResult">
+        <result property="curriculumData" column="curriculum_data"/>
+
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.course" id="courseResult">
+        <result property="academyId" column="ac_id"/>
+        <result property="specialtyName" column="specialty_name"/>
+
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <insert id="addCurriculum"  useGeneratedKeys="true" keyProperty="id">
+        insert into curriculum_table(curriculum_data, create_time, update_time)
+        VALUES (#{curriculumData}, #{createTime} , #{updateTime})
+    </insert>
+    <insert id="addClassCourse">
+        insert into course_class_table(course_id, class_id, teacher_id)
+        VALUES (#{courseId}, #{classId} , #{teacherId})
+    </insert>
+
+    <select id="selectClass" resultMap="ClassResult">
+        SELECT *,(select COUNT(*) from student_table as s where s.class_id = c.id) as number
+        FROM class_table as c
+        <where>
+            <if test="academyId != 0">
+                c.academy_id = #{academyId}
+                <if test="specialtyName != '0'.toString()">
+                    and c.specialty_name = #{specialtyName}
+                </if>
+                <if test="select != '0'.toString()">
+                    and c.name like "%"#{select}"%"
+                </if>
+            </if>
+            <if test="academyId == 0">
+                <if test="select != 0">
+                    c.name = #{select}
+                </if>
+            </if>
+
+            <if test="deanId != 0">
+                and c.academy_id in(select da.academy_id from dean_authority_table as da where da.dean_id=#{deanId})
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="selectByIdClass" resultMap="ClassResult">
+        SELECT *
+        FROM class_table
+        <where>
+            <if test="id != 0">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByTeacherGetClass" resultMap="ClassResult">
+        SELECT c.*
+        FROM course_class_table as cc, class_table as c
+        <where>
+            cc.teacher_id = #{id} and c.id = class_id
+        </where>
+        group by c.id
+    </select>
+
+    <select id="GetClassCourse" resultMap="courseResult">
+        SELECT c.*, t.name as teacherName, t.id as teacherId
+        FROM course_class_table as cc, course_table as c, teacher_table as t
+        <where>
+            cc.class_id = #{classId} and cc.course_id = c.id and t.id = cc.teacher_id
+        </where>
+    </select>
+
+    <select id="selectByAcademyIdFindspecialt" resultType="com.cwy.educationaladministrationsystem.model.specialty">
+        SELECT *
+        FROM specialty_table
+        <where>
+            <if test="id != 0">
+                academy_id = #{id}
+            </if>
+        </where>
+    </select>
+    <select id="GetCurriculum" resultMap="curriculumResult">
+        SELECT *
+        FROM curriculum_table
+        <where>
+                id = #{id}
+        </where>
+    </select>
+
+    <select id="ByAcademyIdGetCourse" resultMap="courseResult">
+        SELECT *
+        FROM course_table
+        <where>
+            ac_id = #{id}
+        </where>
+    </select>
+
+    <select id="GetByTeacherClass" resultMap="ClassResult">
+        SELECT cl.*
+        FROM class_table as cl , course_class_table as cc
+        where cc.teacher_id = #{teacherId} and cl.id = cc.class_id group by cl.id
+    </select>
+
+    <select id="ByCourseIdGetTeacher" resultMap="teacherResult">
+        SELECT t.*
+        FROM teacher_course_table as tc LEFT JOIN teacher_table as t on t.id = tc.teacher_id
+        <where>
+            tc.course_id = #{id}
+        </where>
+    </select>
+
+
+    <delete id="DeleteClassCourse">
+        delete from course_class_table
+        <where>
+            course_id=#{courseId} and class_id=#{classId}
+        </where>
+    </delete>
+
+    <delete id="deleteClass">
+        delete from class_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+
+
+    <update id="EditClass">
+        update class_table set name=#{name},year=#{year},curriculum_id=#{curriculumId},specialty_name=#{specialtyName},academy_id=#{academyId},update_time=#{updateTime} where id=#{id}
+    </update>
+
+    <update id="editCurriculum">
+        update curriculum_table set curriculum_data=#{curriculumData},update_time=#{updateTime} where id=#{id}
+    </update>
+
+</mapper>

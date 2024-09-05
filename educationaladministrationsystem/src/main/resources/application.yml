@@ -1,0 +1,50 @@
+server:
+  port: 9999
+
+spring:
+  #配置邮箱信息
+  mail:
+    username: 123@qq.com
+    password: 123
+    host: smtp.qq.com
+    #开启加密授权验证
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/educationaladministrationsystem?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    username: root
+    password: 123456
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    stream:
+      username: guest
+      password: guest
+      virtual-host: /
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    auto-mapping-behavior: partial
+    map-underscore-to-camel-case: true
+#mybatis:
+#  mapperLocations: classpath:mapper/*.xml
+pagehelper:
+  # 设置方言，此处指定 MySQL 数据库
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+  # 默认值为 false，当该参数设置为 true 时，如果 pageSize=0 或者 RowBounds.limit = 0 就会查询出全部的结果（相当于没有执行分页查询，但是返回结果仍然是 Page 类型）
+  page-size-zero: true
+

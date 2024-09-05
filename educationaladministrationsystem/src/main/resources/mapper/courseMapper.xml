@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cwy.educationaladministrationsystem.mapper.courseMapper">
+    <resultMap type="com.cwy.educationaladministrationsystem.model.electiveCourse" id="electiveCourseResult">
+        <result property="classTime" column="class_time"/>
+        <result property="teacherId" column="teacher_id"/>
+
+        <result property="academyId" column="academy_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="com.cwy.educationaladministrationsystem.model.course" id="courseResult">
+        <result property="academyId" column="ac_id"/>
+        <result property="specialtyName" column="specialty_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <insert id="addElectiveCourse"  useGeneratedKeys="true" keyProperty="id">
+        insert into elective_course_table(name, class_time,teacher_id, academy_id,total, create_time, update_time)
+        VALUES (#{name} ,#{classTime},#{teacherId}, #{academyId},#{total}, #{createTime}, #{updateTime})
+
+    </insert>
+    <insert id="chooseCourse" >
+        insert into student_elective_course_table(elective_course_id,student_id)
+        VALUES (#{cid} ,#{studentId})
+    </insert>
+
+    <update id="editElectiveCourse">
+        update elective_course_table set name=#{name},class_time=#{classTime},teacher_id=#{teacherId},academy_id=#{academyId},total=#{total},update_time=#{updateTime}
+         where id=#{id}
+    </update>
+    <select id="selectByIdElectiveCourse" resultMap="electiveCourseResult">
+                SELECT ec.*, (select COUNT(*) from student_elective_course_table as s where s.elective_course_id = ec.id) as chooseNub
+        FROM elective_course_table as ec
+        where id=#{id}
+    </select>
+    <select id="GetElectiveCourse" resultMap="electiveCourseResult">
+        SELECT ec.*,t.name as teacherName, a.name as academyName,(select COUNT(*) from student_elective_course_table as s where s.elective_course_id = ec.id) as chooseNub
+        FROM elective_course_table as ec
+        LEFT JOIN teacher_table as t on t.id = ec.teacher_id
+        LEFT JOIN academy_table as a ON ec.academy_id=a.id
+        <where>
+            <if test="acId != 0">
+                ec.academy_id = #{acId}
+                <if test="teacherId != 0">
+                    and ec.teacher_id = #{teacherId}
+                </if>
+                <if test="select != '0'.toString()">
+                    and (ec.name like "%"#{select}"%")
+                </if>
+            </if>
+            <if test="acId == 0">
+                <if test="select != '0'.toString()">
+                    ec.name like "%"#{select}"%"
+                </if>
+                <if test="teacherId != 0">
+                    ec.teacher_id = #{teacherId}
+                </if>
+            </if>
+            <if test="deanId != 0">
+                and ec.academy_id in(select da.academy_id from dean_authority_table as da where da.dean_id=#{deanId})
+            </if>
+        </where>
+    </select>
+
+    <select id="StudentGetElectiveCourse" resultMap="electiveCourseResult">
+        SELECT ec.*,t.name as teacherName, a.name as academyName,(select COUNT(*) from student_elective_course_table as s where s.elective_course_id = ec.id) as chooseNub
+        FROM elective_course_table as ec,
+             teacher_table as t,
+             academy_table as a
+        <where>
+             ec.id not in(select elective_course_id from student_elective_course_table where student_id = #{studentId}) and t.id = ec.teacher_id and ec.academy_id=a.id
+            <if test="acId != 0">
+                and ec.academy_id = #{acId}
+                <if test="teacherId != 0">
+                    and ec.teacher_id = #{teacherId}
+                </if>
+                <if test="select != '0'.toString()">
+                    and (ec.name like "%"#{select}"%")
+                </if>
+            </if>
+            <if test="acId == 0">
+                <if test="select != '0'.toString()">
+                    and ec.name like "%"#{select}"%"
+                </if>
+                <if test="teacherId != 0">
+                    and ec.teacher_id = #{teacherId}
+                </if>
+            </if>
+        </where>
+    </select>
+
+
+    <select id="ByIdGetElectiveCourse" resultMap="electiveCourseResult">
+        SELECT ec.* FROM elective_course_table as ec
+        <where>
+            ec.id=#{id}
+
+        </where>
+
+    </select>
+
+    <select id="selectByClassIdTeacherIdGetCourse" resultMap="courseResult">
+        SELECT c.* FROM course_class_table as cc, course_table as c
+        <where>
+            cc.class_id=#{id} and cc.teacher_id = #{teacherId} and c.id=cc.course_id
+        </where>
+        group by c.id
+    </select>
+
+    <select id="ByStudentIdGetElectiveCourse" resultMap="electiveCourseResult">
+        SELECT ec.*,t.name as teacherName, a.name as academyName,
+        (select COUNT(*) from student_elective_course_table as s where s.elective_course_id = ec.id) as chooseNub
+        FROM student_elective_course_table as sc,
+        elective_course_table as ec,
+        teacher_table as t,
+        academy_table as a
+        <where>
+            sc.student_id=#{studentId} and ec.id =sc.elective_course_id and t.id = ec.teacher_id and ec.academy_id=a.id
+        </where>
+
+    </select>
+
+    <delete id="deleteElectiveCourse">
+        delete from elective_course_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+    <delete id="CancelChooseCourse">
+        delete from student_elective_course_table
+        <where>
+            elective_course_id=#{cid} and student_id=#{studentId}
+        </where>
+    </delete>
+
+</mapper>

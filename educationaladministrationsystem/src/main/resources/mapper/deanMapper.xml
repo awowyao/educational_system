@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cwy.educationaladministrationsystem.mapper.deanMapper">
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.student" id="studentResult">
+        <result property="guardianPhone" column="guardian_phone"/>
+        <result property="curriculumId" column="curriculum_id"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="classId" column="class_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="com.cwy.educationaladministrationsystem.model.teacher" id="teacherResult">
+        <result property="curriculumId" column="curriculum_id"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="com.cwy.educationaladministrationsystem.model.course" id="courseResult">
+        <result property="academyId" column="ac_id"/>
+        <result property="specialtyName" column="specialty_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.ClassT" id="ClassResult">
+        <result property="academyId" column="academy_id"/>
+        <result property="specialtyName" column="specialty_name"/>
+        <result property="curriculumId" column="curriculum_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+
+    <insert id="addTeacher">
+        insert into teacher_table(id, name,phone,sex, academy_id, create_time, update_time,password)
+        VALUES (#{id}, #{name} ,#{phone},#{sex}, #{academyId}, #{createTime}, #{updateTime},#{password})
+    </insert>
+    <insert id="addCourse">
+        insert into course_table(name,textbooks, ac_id, create_time, update_time, specialty_name)
+        VALUES (#{name}, #{textbooks}, #{academyId}, #{createTime}, #{updateTime},#{specialtyName})
+    </insert>
+
+    <insert id="addStudent">
+        insert into student_table(id, name,sex, phone, guardian, guardian_phone, academy_id, class_id, create_time, update_time,password)
+        VALUES (#{id}, #{name} ,#{sex} ,#{phone}, #{guardian}, #{guardianPhone}, #{academyId}, #{classId}, #{createTime}, #{updateTime}, #{password})
+    </insert>
+
+    <insert id="addClass">
+        insert into class_table(name, academy_id,year, specialty_name, create_time, update_time)
+        VALUES (#{name},  #{academyId}, #{year}, #{specialtyName}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="addTeacherByCourse">
+        insert into teacher_course_table(course_id,teacher_id)
+        VALUES (#{id} ,#{teacherId})
+    </insert>
+
+    <update id="StudentSetClass">
+        update student_table set class_id=#{classId},update_time=#{date} where id=#{id}
+    </update>
+
+    <update id="StudentSetAcademy">
+        update teacher_table set academy_id=#{academyId},update_time=#{date} where id=#{id}
+    </update>
+    <update id="editCourse">
+        update course_table set name=#{name},textbooks=#{textbooks},ac_id=#{academyId},specialty_name=#{specialtyName},update_time=#{updateTime} where id=#{id}
+    </update>
+
+    <update id="editTeacher">
+        update teacher_table set name=#{name},phone=#{phone},sex=#{sex},email=#{email},academy_id=#{academyId},curriculum_id=#{curriculumId},update_time=#{updateTime}
+
+        <if test="curriculumId != null">
+            ,curriculum_id = #{curriculumId}
+        </if> where id=#{id}
+    </update>
+
+    <update id="editStudent">
+        update student_table set name=#{name},sex=#{sex},phone=#{phone},email=#{email},guardian=#{guardian},class_id=#{classId},guardian_Phone=#{guardianPhone},academy_id=#{academyId} ,update_time=#{updateTime}
+        <if test="curriculumId != null">
+            ,curriculum_id=#{curriculumId}
+        </if>
+                where id=#{id}
+    </update>
+
+    <select id="selectStudent" resultMap="studentResult">
+        SELECT s.*,c.name as className, a.name as academyName FROM student_table as s
+            LEFT JOIN class_table as c on c.id = s.class_id
+            LEFT JOIN academy_table as a ON s.academy_id=a.id
+            <where>
+                <if test="acId != 0">
+                    s.academy_id = #{acId}
+                    <if test="classId != 0">
+                        and s.class_id = #{classId}
+                    </if>
+                    <if test="SelectStudent != '0'.toString()">
+                        and (s.id = #{SelectStudent} or s.name like "%"#{SelectStudent}"%")
+                    </if>
+                </if>
+                <if test="acId == 0">
+                    <if test="SelectStudent != '0'.toString()">
+                        s.id = #{SelectStudent} or s.name like "%"#{SelectStudent}"%"
+                    </if>
+                    <if test="classId != 0">
+                         s.class_id = #{classId}
+                    </if>
+                </if>
+
+                <if test="deanId != 0">
+                    and s.academy_id in(select academy_id from dean_authority_table where dean_id=#{deanId})
+                </if>
+            </where>
+
+    </select>
+
+    <select id="selectTeacher" resultMap="teacherResult">
+        SELECT t.*, a.name as academyName
+        FROM teacher_table as t LEFT JOIN academy_table as a on a.id=t.academy_id
+        <where>
+            <if test="acId != 0">
+                t.academy_id = #{acId}
+                <if test="selectData != '0'.toString()">
+                    and (t.id = #{selectData} or t.name like "%"#{selectData}"%")
+                </if>
+            </if>
+
+            <if test="acId == 0">
+                <if test="selectData != '0'.toString()">
+                    t.id = #{selectData} or t.name like "%"#{selectData}"%"
+                </if>
+            </if>
+
+            <if test="deanId != 0">
+                and t.academy_id in(select academy_id from dean_authority_table where dean_id=#{deanId})
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCourse" resultMap="courseResult">
+        SELECT co.*, a.name as academyName
+        FROM course_table as co LEFT JOIN academy_table as a on a.id=co.ac_id
+        <where>
+            <if test="acId != 0">
+                co.ac_id = #{acId}
+                <if test="selectData != '0'.toString()">
+                    and (co.id = #{selectData} or co.name like "%"#{selectData}"%")
+                </if>
+                <if test="deanId != 0">
+                    and co.ac_id in(select da.academy_id from dean_authority_table as da where da.dean_id=#{deanId})
+                </if>
+            </if>
+
+            <if test="acId == 0">
+                <if test="selectData != '0'.toString()">
+                    co.id = #{selectData} or co.name like "%"#{selectData}"%"
+                    <if test="deanId != 0">
+                        and co.ac_id in(select da.academy_id from dean_authority_table as da where da.dean_id=#{deanId})
+                    </if>
+                </if>
+                <if test="selectData == '0'.toString()">
+                    <if test="deanId != 0">
+                        co.ac_id in(select da.academy_id from dean_authority_table as da where da.dean_id=#{deanId})
+                    </if>
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByIdTeacher" resultMap="teacherResult">
+        SELECT *
+        FROM teacher_table
+        where id=#{id}
+    </select>
+
+
+    <select id="selectByIdStudent" resultMap="studentResult">
+        SELECT *
+        FROM student_table
+        where id=#{id}
+    </select>
+
+
+
+    <select id="selectAcademy" resultType="com.cwy.educationaladministrationsystem.model.academy">
+        SELECT a.*
+        FROM academy_table as a
+        <where>
+            <if test="academy != '1'.toString()">
+                a.name = #{academy}
+                <if test="deanId != 0">
+                    and a.id in(select academy_id from dean_authority_table where dean_id=#{deanId})
+                </if>
+            </if>
+            <if test="academy == '1'.toString()">
+                <if test="deanId != 0">
+                    a.id in(select academy_id from dean_authority_table where dean_id=#{deanId})
+                </if>
+            </if>
+        </where>
+
+    </select>
+
+    <select id="selectByAcademyIdFindClass" resultMap="ClassResult">
+        SELECT *
+        FROM class_table
+        <where>
+            <if test="id != 0">
+                academy_id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="ByAcademyIdAndNameSelectCourse" resultMap="courseResult">
+        SELECT *
+        FROM course_table
+        where ac_id = #{academyId} and name = #{courseName}
+
+    </select>
+
+    <select id="SelectCourseNub" resultType="Integer">
+        SELECT COUNT(*)
+        FROM course_table
+        where ac_id = #{academyId} and name = #{courseName}
+    </select>
+
+    <select id="selectCourseData" resultMap="courseResult">
+        SELECT *
+        FROM course_table
+        where id = #{id}
+    </select>
+
+    <select id="selectCourseTeacher" resultMap="teacherResult">
+        SELECT t.*
+        FROM teacher_course_table as tc, teacher_table as t
+        where tc.course_id = #{id} and t.id = tc.teacher_id
+    </select>
+
+    <delete id="deleteTeacher">
+        delete from teacher_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+
+    <delete id="deleteStudent">
+        delete from student_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+
+    <delete id="delectCourseTeacherById">
+        delete from teacher_course_table
+        <where>
+            course_id=#{id}
+        </where>
+    </delete>
+
+    <delete id="deleteCourse">
+        delete from course_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+
+</mapper>
