@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cwy.educationaladministrationsystem.mapper.adminMapper">
+    <resultMap type="com.cwy.educationaladministrationsystem.model.deanAuthority" id="deanAuthorityResult">
+        <result property="deanId" column="dean_id"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="operateLog" column="operate_log"/>
+    </resultMap>
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.dean" id="deanResult">
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <insert id="addAcademy">
+        insert into academy_table(id, name,create_time, update_time)
+        VALUES (#{id}, #{name} , #{create_time}, #{update_time})
+    </insert>
+    <insert id="addSpecialty">
+        insert into specialty_table(name,academy_id,create_time, update_time)
+        VALUES (#{name},#{academy_id}, #{create_time}, #{update_time})
+    </insert>
+
+    <insert id="AddDeanAuthority">
+        insert into dean_authority_table(dean_id, academy_id,authority, operate_log)
+        VALUES (#{deanId}, #{academyId} ,#{authority},'[]')
+    </insert>
+    <insert id="AddDeanUser">
+        insert into dean_table(id, name,phone,password, email, create_time, update_time)
+        VALUES (#{id}, #{name} ,#{phone},#{password}, #{email}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="AddAdminUser">
+        insert into admin_table(name,phone,password, email, create_time, update_time)
+        VALUES (#{name} ,#{phone},#{password}, #{email}, #{createTime}, #{updateTime})
+    </insert>
+
+    <select id="selectByIdGetAuthority" resultMap="deanAuthorityResult">
+        SELECT *
+        FROM dean_authority_table AS da
+        <where>
+            da.dean_id = #{deanId} AND da.academy_id = #{academyId}
+        </where>
+    </select>
+
+    <select id="selectDeanAuthority" resultMap="deanAuthorityResult">
+        SELECT *
+        FROM dean_authority_table AS da
+        <where>
+            da.dean_id = #{deanId}
+        </where>
+    </select>
+
+    <select id="GetDeanData" resultMap="deanResult">
+        SELECT *
+        FROM dean_table
+        <where>
+            id = #{id}
+        </where>
+    </select>
+    <select id="GetByIdAcademy" resultType="com.cwy.educationaladministrationsystem.model.academy">
+        SELECT *
+        FROM academy_table
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="GetDeanAcademyList" resultType="com.cwy.educationaladministrationsystem.model.academy">
+        SELECT a.*
+        FROM dean_authority_table as da,
+             academy_table as a
+        <where>
+            da.dean_id = #{id} and da.academy_id = a.id
+        </where>
+    </select>
+
+    <select id="GetAcademyList" resultType="com.cwy.educationaladministrationsystem.model.academy">
+        SELECT a.*,
+        (select COUNT(*) from teacher_table as t where t.academy_id = a.id) as teacherNumber,
+        (select COUNT(*) from student_table as s where s.academy_id = a.id) as studentNumber
+        FROM academy_table as a
+        <where>
+        <if test="select != '0'.toString()">
+            a.id = #{select} or a.name like "%"#{select}"%"
+        </if>
+
+        </where>
+    </select>
+
+    <select id="GetSpecialtyList" resultType="com.cwy.educationaladministrationsystem.model.specialty">
+        SELECT a.*,
+        (select COUNT(*) from class_table as c where c.specialty_name = a.name) as classNumber,
+        (select COUNT(*) from student_table as s where s.class_id in (select id from class_table where specialty_name=a.name)) as studentNumber
+        FROM specialty_table as a
+        <where>
+            <if test="select != '0'.toString()">
+               (a.id = #{select} or a.name like "%"#{select}"%")
+            </if>
+            <if test="acId !=0">
+                and a.academy_id = #{acId}
+            </if>
+
+        </where>
+    </select>
+
+
+    <select id="selectDean" resultMap="deanResult">
+        SELECT d.*
+        FROM dean_table as d
+            <if test="academyId !=0">
+                ,dean_authority_table as da
+                <where>
+                    da.dean_id = d.id
+                    da.academy_id = #{academyId}
+                </where>
+            </if>
+    </select>
+
+    <select id="GetAdminUser" resultMap="deanResult">
+        SELECT *
+        FROM admin_table
+    </select>
+    <select id="GetByIdAdmin" resultMap="deanResult">
+        SELECT *
+        FROM admin_table where id=#{id}
+    </select>
+
+    <update id="editDeanOperateLog">
+        update dean_authority_table set operate_log=#{log} where dean_id = #{deanId} AND academy_id = #{academyId}
+    </update>
+
+    <update id="EditDeanUser">
+        update dean_table set name=#{name},
+                              phone = #{phone},
+                              email = #{email},
+                              sex = #{sex},
+                              update_time = #{createTime} where id = #{id}
+    </update>
+
+    <update id="EditAdminUser">
+        update admin_table set name=#{name},
+                              phone = #{phone},
+                              email = #{email},
+                              update_time = #{createTime} where id = #{id}
+    </update>
+
+
+    <update id="editAcademy">
+        update academy_table set name=#{name},
+                               update_time = #{update_time} where id = #{id}
+    </update>
+    <update id="editSpecialty">
+        update specialty_table set name=#{name},
+                                 update_time = #{update_time} where id = #{id}
+    </update>
+
+    <delete id="deleteDeanA">
+        delete from dean_authority_table
+        <where>
+            dean_id=#{id}
+        </where>
+    </delete>
+
+    <delete id="DeleteDeanUser">
+        delete from dean_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+    <delete id="DeleteAcademy">
+        delete from academy_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+    <delete id="DeleteSpecialty">
+        delete from specialty_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+    <delete id="DeleteAdminUser">
+        delete from admin_table
+        <where>
+            id=#{id}
+        </where>
+    </delete>
+
+</mapper>

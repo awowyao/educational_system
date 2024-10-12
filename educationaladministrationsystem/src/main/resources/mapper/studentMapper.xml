@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cwy.educationaladministrationsystem.mapper.studentMapper">
+    <resultMap type="com.cwy.educationaladministrationsystem.model.student" id="studentResult">
+        <result property="guardianPhone" column="guardian_phone"/>
+        <result property="curriculumId" column="curriculum_id"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="classId" column="class_id"/>
+
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+
+    </resultMap>
+
+    <resultMap type="com.cwy.educationaladministrationsystem.model.course" id="courseResult">
+        <result property="academyId" column="ac_id"/>
+        <result property="specialtyName" column="specialty_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+
+
+    <insert id="addStudentCourse">
+        insert into student_course_table(student_id, course_id, teacher_id)
+        VALUES (#{id}, #{courseId} , #{teacherId})
+    </insert>
+
+    <select id="ByElectiveIdGetStudent" resultMap="studentResult">
+        SELECT s.* FROM student_elective_course_table as sec,
+        student_table as s
+        <where>
+            sec.elective_course_id = #{id} and s.id = sec.student_id
+        </where>
+
+    </select>
+    <select id="GetByTeacherIdStudent" resultMap="studentResult">
+        SELECT s.*,c.name as className FROM student_table as s
+        LEFT JOIN class_table as c on c.id = s.class_id
+        LEFT JOIN student_course_table as sc on sc.student_id = s.id
+        <where>
+            sc.teacher_id = #{teacherId}
+            <if test="classId !=0">
+                and c.id = #{classId}
+            </if>
+        </where>
+        group by s.id
+    </select>
+
+<!--    <select id="GetByExamStudent" resultMap="studentResult">-->
+<!--        SELECT s.*,c.name as className, se.scores as scores, ct.name as courseName FROM student_table as s-->
+<!--        LEFT JOIN class_table as c on c.id = s.class_id-->
+<!--        LEFT JOIN student_course_table as sc on sc.student_id = s.id-->
+<!--        LEFT JOIN exam_table as e on e.course_id = sc.course_id-->
+<!--        LEFT JOIN course_table as ct on ct.id = sc.course_id-->
+<!--        LEFT JOIN student_exam_table as se on (se.student_id = s.id and se.exam_id = e.id)-->
+<!--        where sc.teacher_id = #{teacherId} and e.course_id = sc.course_id-->
+<!--    </select>-->
+
+<!--    <select id="GetByExamStudent" resultMap="studentResult">-->
+<!--        SELECT s.*,c.name as className, se.scores as scores,ct.name as courseName, se.scores_state as scoresState,se.id as seId-->
+<!--        FROM-->
+<!--            student_table as s,-->
+<!--            class_table as c,-->
+<!--            student_course_table as sc,-->
+<!--            exam_table as e,-->
+<!--            student_exam_table as se,-->
+<!--            course_table as ct-->
+
+<!--        where sc.teacher_id = #{teacherId} and s.id = sc.student_id and c.id = s.class_id and ct.id = sc.course_id and e.course_id = sc.course_id and se.student_id = s.id-->
+<!--          and se.exam_id = e.id and e.course_id = sc.course_id-->
+
+
+<!--        <if test="classId !=0">-->
+<!--            and c.id = #{classId}-->
+<!--            <if test="courseId !=0">-->
+<!--               and ct.id = #{courseId}-->
+<!--            </if>-->
+<!--        </if>-->
+<!--        <if test="select != '0'.toString()">-->
+<!--           and (s.id = #{select} or s.name like "%"#{select}"%")-->
+<!--        </if>-->
+
+<!--    </select>-->
+    <select id="GetByExamStudent" resultMap="studentResult">
+        SELECT s.*,c.name as className, se.scores as scores,ct.name as courseName, se.scores_state as scoresState,se.id as seId
+        FROM
+        student_table as s,
+        class_table as c,
+        student_course_table as sc,
+        exam_table as e,
+        student_exam_table as se,
+        course_table as ct
+        where sc.teacher_id = #{teacherId} and s.id = sc.student_id and c.id = s.class_id and e.course_id = sc.course_id and se.student_id = s.id
+        and se.exam_id = e.id and e.course_id = sc.course_id and ct.id = e.course_id
+
+
+        <if test="classId !=0">
+            and c.id = #{classId}
+            <if test="courseId !=0">
+                and ct.id = #{courseId}
+            </if>
+        </if>
+        <if test="select != '0'.toString()">
+            and (s.id = #{select} or s.name like "%"#{select}"%")
+        </if>
+
+    </select>
+    <select id="GetByEleExamStudent" resultMap="studentResult">
+        SELECT s.*,c.name as className, se.scores as scores,ect.name as courseName, se.scores_state as scoresState,se.id as seId
+        FROM
+        student_table as s,
+        class_table as c,
+        elective_course_table as ect,
+        exam_table as e,
+        student_exam_table as se,
+        student_elective_course_table as sect
+        where ect.teacher_id = #{teacherId} and sect.elective_course_id=ect.id  and s.id = sect.student_id and c.id = s.class_id and e.electve_course_id = sect.elective_course_id and se.student_id = s.id
+        and se.exam_id = e.id
+        <if test="classId !=0">
+            and c.id = #{classId}
+            <if test="courseId !=0">
+                and ect.id = #{courseId}
+            </if>
+        </if>
+        <if test="select != '0'.toString()">
+            and (s.id = #{select} or s.name like "%"#{select}"%")
+        </if>
+
+    </select>
+    <delete id="deleteStudentCourse">
+        delete from student_course_table
+        <where>
+            student_id=#{id} and course_id = #{courseId}
+        </where>
+    </delete>
+
+<!--    <select id="GetStudentComplaint" resultMap="studentResult">-->
+<!--        SELECT s.*,c.name as className, se.scores as scores,ct.name as courseName,-->
+<!--               se.scores_state as scoresState,-->
+<!--               se.id as seId-->
+<!--        FROM-->
+<!--            student_table as s,-->
+<!--            class_table as c,-->
+<!--            studen_complaint_table as sc,-->
+<!--            exam_table as e,-->
+<!--            student_exam_table as se,
+                course_table as ct-->
+
+<!--        where sc.teacher_id = #{teacherId} and se.id= sc.student_exam_id and s.id = se.student_id and e.course_id = sc.course_id-->
+<!--          and e.id= se.exam_id and e.course_id = sc.course_id and c.id = s.class_id-->
+<!--    </select>-->
+    <select id="GetStudentComplaint" resultMap="studentResult">
+        SELECT s.*,c.name as className, se.scores as scores,ct.name as courseName,
+                       se.scores_state as scoresState,
+                       se.id as seId,sc.state as complaintState
+                FROM
+                    studen_complaint_table as sc,
+                    student_exam_table as se,
+                    exam_table as e,
+                    student_table as s,
+                    class_table as c,
+                    course_table as ct
+
+                where sc.teacher_id = #{teacherId} and se.id = sc.student_exam_id and e.id = se.exam_id
+                  and s.id = se.student_id and c.id = s.class_id and ct.id = e.course_id
+            </select>
+
+    <select id="GetStudentEleComplaint" resultMap="studentResult">
+        SELECT s.*,c.name as className, se.scores as scores,ct.name as courseName,
+               se.scores_state as scoresState,
+               se.id as seId,sc.state as complaintState
+        FROM
+            studen_complaint_table as sc,
+            student_exam_table as se,
+            exam_table as e,
+            student_table as s,
+            class_table as c,
+            elective_course_table as ct
+
+        where sc.teacher_id = #{teacherId} and se.id = sc.student_exam_id and e.id = se.exam_id
+          and s.id = se.student_id and c.id = s.class_id and ct.id = e.electve_course_id
+    </select>
+
+
+            <update id="DeleteStudentComplaint">
+                update studen_complaint_table set state=2
+                                     where student_exam_id=#{id}
+            </update>
+
+<!--            <select id="GetStudentScores" resultMap="courseResult">-->
+<!--                SELECT c.*, e.name as examName,-->
+<!--                       se.scores as scores,-->
+<!--                       se.scores_state as scoresState,-->
+<!--                       t.name as teacherName,-->
+<!--                       t.id as teacherId,-->
+<!--                       se.id as seId-->
+<!--                FROM student_exam_table as se,-->
+<!--                     exam_table as e,-->
+<!--                     course_table as c,-->
+<!--                    elective_course_table as ec,-->
+<!--                     student_course_table as sc,-->
+<!--                     teacher_table as t-->
+<!--                where se.student_id = #{id} and e.id = se.exam_id and c.id = e.course_id and ec.id=e.electve_course_id and sc.student_id=#{id} and sc.course_id=c.id-->
+<!--                  and t.id = sc.teacher_id-->
+<!--                    <if test="select !='0'.toString()">-->
+<!--                        and (c.name like "%"#{select}"%" or e.name like "%"#{select}"%")-->
+<!--                    </if>-->
+<!--            </select>-->
+
+            <select id="GetStudentScores" resultMap="courseResult">
+                SELECT  e.name as examName,
+                coalesce(c.id, ec.id),
+                coalesce(c.create_time, ec.create_time),
+                coalesce(c.ac_id, ec.academy_id) as ac_id,
+                coalesce(c.name, ec.name) as name,
+                se.scores as scores,
+                se.scores_state as scoresState,
+                coalesce(t.name, t2.name) as teacherName,
+                coalesce(t.id, t2.id) as teacherId,
+                se.id as seId
+                FROM student_exam_table as se
+                LEFT JOIN exam_table as e
+                    LEFT JOIN course_table as c
+                    LEFT JOIN student_course_table as sc
+                    LEFT JOIN teacher_table as t on t.id = sc.teacher_id on (sc.student_id=#{id}) and sc.course_id=c.id on c.id = e.course_id
+                LEFT JOIN elective_course_table as ec LEFT JOIN teacher_table as t2 on t2.id = ec.teacher_id on (ec.id=e.electve_course_id)
+                        on e.id = se.exam_id
+                 where
+                    se.student_id = #{id}
+                <if test="select !='0'.toString()">
+                    and (c.name like "%"#{select}"%" or e.name like "%"#{select}"%")
+                </if>
+            </select>
+            <select id="GetComplaintTable" resultType="Map">
+                SELECT c.name as name,
+                       c.id as courseId,
+                       e.name as examName,
+                       se.scores as scores,
+                       se.scores_state as scoresState,
+                       t.name as teacherName,
+                       t.id as teacherId,
+                       se.id as seId,
+                       sco.state as complaintState,
+                       DATE_FORMAT(sco.create_time,"%Y-%m-%d %H:%i:%s") as createTime
+
+                FROM student_exam_table as se,
+                     studen_complaint_table as sco,
+                     exam_table as e,
+                     course_table as c,
+                     student_course_table as sc,
+                     teacher_table as t
+                where se.id = sco.student_exam_id and se.student_id = #{id} and e.id = se.exam_id and c.id = e.course_id and sc.student_id=#{id} and sc.course_id=c.id
+                  and t.id = sc.teacher_id
+            </select>
+    <select id="GetEleComplaintTable" resultType="Map">
+        SELECT c.name as name,
+               c.id as courseId,
+               e.name as examName,
+               se.scores as scores,
+               se.scores_state as scoresState,
+               t.name as teacherName,
+               t.id as teacherId,
+               se.id as seId,
+               sco.state as complaintState,
+               DATE_FORMAT(sco.create_time,"%Y-%m-%d %H:%i:%s") as createTime
+
+        FROM student_exam_table as se,
+             studen_complaint_table as sco,
+             exam_table as e,
+             elective_course_table as c,
+             student_elective_course_table as sc,
+             teacher_table as t
+        where se.id = sco.student_exam_id and se.student_id = #{id} and e.id = se.exam_id and c.id = e.electve_course_id and sc.student_id=#{id} and sc.elective_course_id=c.id
+          and t.id = c.teacher_id
+    </select>
+
+            <insert id="ComplaintCourse">
+                insert into studen_complaint_table(course_id, teacher_id, student_exam_id,create_time,updata_time)
+                VALUES (#{courseId}, #{teacherId} , #{seId},#{date}, #{date})
+            </insert>
+
+            <select id="selectBycourseStudent" resultMap="studentResult">
+                SELECT s.*
+                FROM student_course_table as sc,
+                     student_table as s
+                where sc.course_id = #{id} and s.id = sc.student_id
+            </select>
+
+        </mapper>
